@@ -4,21 +4,24 @@
 //
 //  Created by kuldeep Singh on 18/01/26.
 //
-
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var authManager: AuthenticationManager
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if !authManager.hasCompletedOnboarding {
+                OnboardingView()
+            } else if authManager.isAuthenticated {
+                MainTabView()
+            } else {
+                AuthenticationView()
+            }
         }
-        .padding()
     }
 }
-
 #Preview {
     ContentView()
+        .environmentObject(AuthenticationManager())
 }
