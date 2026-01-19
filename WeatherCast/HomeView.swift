@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 // MARK: - Home View
 struct HomeView: View {
@@ -132,7 +133,7 @@ struct HomeView: View {
                     Text("Search for a city to view weather")
                         .font(.system(size: 18))
                         .foregroundColor(.red)
-                   
+                    
                     
                     TextField("Search city", text: $searchCity)
                         .textFieldStyle(SearchFieldStyle())
@@ -159,12 +160,22 @@ struct HomeView: View {
                 DetailView(weather: weather)
             }
         }
+        .onAppear {
+                    // Agar pehle se koi city saved hai aur abhi screen khali hai
+                    if weatherService.currentWeather == nil && !weatherService.lastCity.isEmpty {
+                        Task {
+                            await weatherService.fetchWeather(for: weatherService.lastCity)
+                        }
+                    }
+                }
+        
     }
     
     private func isFavorite() -> Bool {
         guard let cityName = weatherService.currentWeather?.cityName else { return false }
         return supabaseManager.favoriteCities.contains { $0.cityName == cityName }
     }
+    
 }
 
 struct SearchFieldStyle: TextFieldStyle {

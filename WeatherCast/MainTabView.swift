@@ -9,8 +9,8 @@ import SwiftUI
 
 // MARK: - Main Tab View
 struct MainTabView: View {
-    @StateObject private var weatherService = WeatherService()
-    @StateObject private var supabaseManager = SupabaseManager()
+    @EnvironmentObject var weatherService: WeatherService
+    @EnvironmentObject var supabaseManager: SupabaseManager
     @EnvironmentObject var authManager: AuthenticationManager
     
     var body: some View {
@@ -34,9 +34,9 @@ struct MainTabView: View {
                 }
         }
         // Injecting here once makes them available to all tabs
-        .environmentObject(weatherService)
-        .environmentObject(supabaseManager)
-        .environmentObject(authManager)
+//        .environmentObject(weatherService)
+//        .environmentObject(supabaseManager)
+//        .environmentObject(authManager)
         .task {
             if let userId = authManager.currentUser?.id,
                let token = authManager.getAuthToken() {

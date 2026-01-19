@@ -27,18 +27,16 @@ struct ProfileView: View {
                         .foregroundColor(.white)
                     
                     VStack(spacing: 8) {
-                        if let name = authManager.currentUser?.name {
-                            Text(name)
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(Color(white: 0.2))
-                        }
-                        
-                        if let email = authManager.currentUser?.email {
-                            Text(email)
-                                .font(.system(size: 16))
-                                .foregroundColor(Color(white: 0.4))
-                        }
-                    }
+                                            if let user = authManager.currentUser {
+                                                Text(user.name ?? "User")
+                                                    .font(.system(size: 24, weight: .bold))
+                                                    .foregroundColor(Color(white: 0.2))
+                                                
+                                                Text(user.email)
+                                                    .font(.system(size: 16))
+                                                    .foregroundColor(Color(white: 0.4))
+                                            }
+                                        }
                     
                     Button(action: { authManager.signOut() }) {
                         Text("Sign Out")

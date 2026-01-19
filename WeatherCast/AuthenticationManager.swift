@@ -6,10 +6,14 @@
 //
 import Foundation
 import Combine
+import SwiftUI
+ 
 
 class AuthenticationManager: ObservableObject {
-    @Published var isAuthenticated = false
-    @Published var hasCompletedOnboarding = false
+//    @Published var isAuthenticated = false
+//    @Published var hasCompletedOnboarding = false
+    @AppStorage("isAuthenticated") var isAuthenticated = false
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     @Published var currentUser: User?
     @Published var errorMessage: String?
     
@@ -48,6 +52,13 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
+    init() {
+            if let savedUserData = UserDefaults.standard.data(forKey: "savedUser"),
+               let decodedUser = try? JSONDecoder().decode(User.self, from: savedUserData) {
+                self.currentUser = decodedUser
+            }
+        }
+    
     func signIn(email: String, password: String) async {
         guard let url = URL(string: "\(supabaseURL)/auth/v1/token?grant_type=password") else { return }
         
@@ -76,6 +87,9 @@ class AuthenticationManager: ObservableObject {
                         self.isAuthenticated = true
                         self.saveAuthToken(json)
                     }
+                    if let encoded = try? JSONEncoder().encode(self.currentUser) {
+                        UserDefaults.standard.set(encoded, forKey: "savedUser")
+                    }
                 }
             } else {
                 await MainActor.run { self.errorMessage = "Invalid email or password." }
@@ -84,6 +98,8 @@ class AuthenticationManager: ObservableObject {
             await MainActor.run { self.errorMessage = error.localizedDescription }
         }
     }
+    
+    
 
     func resetPassword(email: String) async {
         guard let url = URL(string: "\(supabaseURL)/auth/v1/recover") else { return }

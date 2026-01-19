@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 enum HourlyMetric {
     case temp, humidity, wind
@@ -16,6 +17,7 @@ class WeatherService: ObservableObject {
     @Published var currentWeather: WeatherData?
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @AppStorage("lastSearchedCity") var lastCity: String = ""
     
     private let apiKey = APIConfig.apiKey
     private let baseURL = "https://api.weatherapi.com/v1"
@@ -49,6 +51,7 @@ class WeatherService: ObservableObject {
             )
             await MainActor.run {
                 self.currentWeather = weather
+                self.lastCity = city
                 self.isLoading = false
             }
         } catch {
@@ -110,5 +113,6 @@ class WeatherService: ObservableObject {
             if lower.contains("thunder") { return "cloud.bolt.fill" }
             return "cloud.fill"
         }
-    }
+    
+}
 

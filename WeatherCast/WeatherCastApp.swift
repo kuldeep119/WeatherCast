@@ -11,12 +11,17 @@ import Combine
 // MARK: - Main App
 @main
 struct WeatherCastApp: App {
+    @AppStorage("isAuthenticated") var isAuthenticated = false
     @StateObject private var authManager = AuthenticationManager()
+    @StateObject private var weatherService = WeatherService()
+    @StateObject private var supabaseManager = SupabaseManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(authManager) // This covers the whole app
+                            .environmentObject(authManager)
+                            .environmentObject(weatherService)
+                            .environmentObject(supabaseManager)
         }
     }
 }
