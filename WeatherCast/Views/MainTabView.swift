@@ -49,4 +49,5 @@ struct MainTabView: View {
 #Preview {
     MainTabView()
         .environmentObject(AuthenticationManager())
+        .environmentObject(WeatherService())
 }

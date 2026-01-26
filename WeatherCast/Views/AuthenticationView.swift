@@ -138,7 +138,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
             .padding()
-            .background(Color.white.opacity(0.8))
+            .background(.ultraThinMaterial)
             .cornerRadius(12)
     }
 }
